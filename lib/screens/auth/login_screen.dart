@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:campus_connect/services/auth_service.dart';
 import 'signup.dart';
-import 'splash.dart';
+import 'home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -29,10 +29,10 @@ class _LoginScreenState extends State<LoginScreen> {
           email: _emailController.text.trim(),
           password: _passwordController.text.trim(),
         );
-        // Navigate to splash screen on successful login
+        // Navigate to home screen on successful login
         if(mounted){Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const SplashScreen()),
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
         );}
       } catch (e) {
         setState(() {
@@ -120,7 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     MaterialPageRoute(builder: (_) => const SignUpScreen()),
                   );
                 },
-                style: OutlinedButton.styleFrom(
+                style: TextButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   side: const BorderSide(color: Colors.indigo),
                 ),
