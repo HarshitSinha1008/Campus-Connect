@@ -20,7 +20,7 @@ class HomeScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () async {
-              await AuthService().signOut();
+              await AuthService().logout();
               if (context.mounted) {
                 Navigator.pushAndRemoveUntil(
                   context,
