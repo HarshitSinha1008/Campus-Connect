@@ -14,7 +14,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   String _selectedCommunity = 'General';
   bool _isPosting = false;
 
-  final _communities = ['General', 'CSE', 'ECE', 'ME', 'MBA', 'Sports', 'Events'];
+  final _communities = ['General', 'CSE', 'ECE', 'EEE', 'ME', 'MBA', 'Sports', 'Events'];
   
   Future<void> _post() async {
     if (_contentController.text.trim().isEmpty) return;
