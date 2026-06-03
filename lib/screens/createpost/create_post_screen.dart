@@ -60,7 +60,41 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
           )
         ],
       ),
-      
-    );
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+              TextField(
+              controller: _contentController,
+              maxLines: 6,
+              maxLength: 500,
+              autofocus: true,
+              decoration: const InputDecoration(
+                hintText: "What's on your mind?",
+                border: InputBorder.none,
+                hintStyle: TextStyle(color: Colors.grey, fontSize: 16),
+              ),
+              style: const TextStyle(fontSize: 15),
+            ),
+            const Divider(),
+            const SizedBox(height: 8),
+            const Text('post to community', style: TextStyle(fontSize: 13, color: Colors.grey)),
+            const SizedBox(height: 8),
+            DropdownButtonFormField<String>(
+              value: _selectedCommunity,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              ),
+              items: _communities.map((c) => DropdownMenuItem(value: c, child: Text(c))).toList(),
+              onChanged: (val) => setState(() {
+                _selectedCommunity = val!;
+              }),
+            ),
+          ],
+        ),
+      ),
+    );  
   }
 }

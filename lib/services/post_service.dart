@@ -1,22 +1,21 @@
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:campus_connect/models/post_model.dart';
+import '../models/post_model.dart';
 
-class PostService extends ChangeNotifier {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+class PostService {
+  final _firestore = FirebaseFirestore.instance;
+  final _auth = FirebaseAuth.instance;
 
-//get all posts for the feed, ordered by creation time
+  // Get all posts as real-time stream (newest first)
   Stream<List<PostModel>> getFeedStream() {
     return _firestore
         .collection('posts')
         .orderBy('createdAt', descending: true)
         .snapshots()
-        .map((snap) => snap.docs.map(PostModel.fromDoc).toList());
+        .map((snap) => snap.docs.map((doc) => PostModel.fromDoc(doc)).toList());
   }
 
-//create a new post
+  // Create a new post
   Future<void> createPost({
     required String content,
     required String community,
@@ -27,7 +26,6 @@ class PostService extends ChangeNotifier {
     final userDoc = await _firestore.collection('users').doc(user.uid).get();
     final userData = userDoc.data() as Map<String, dynamic>;
 
-    // Create a new post document in Firestore
     await _firestore.collection('posts').add({
       'authorId': user.uid,
       'authorName': userData['name'],
@@ -41,22 +39,15 @@ class PostService extends ChangeNotifier {
     });
   }
 
-  // Toggle like a post
-
+  // Toggle like on a post
   Future<void> toggleLike(String postId, List<String> currentLikes) async {
     final uid = _auth.currentUser!.uid;
     final ref = _firestore.collection('posts').doc(postId);
 
     if (currentLikes.contains(uid)) {
-      // If already liked, remove the like
-      await ref.update({
-        'likes': FieldValue.arrayRemove([uid])
-      });
+      await ref.update({'likes': FieldValue.arrayRemove([uid])});
     } else {
-      // If not liked, add the like
-      await ref.update({
-        'likes': FieldValue.arrayUnion([uid])
-      });
+      await ref.update({'likes': FieldValue.arrayUnion([uid])});
     }
   }
 }

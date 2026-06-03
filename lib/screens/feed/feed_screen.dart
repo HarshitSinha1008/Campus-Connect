@@ -76,4 +76,88 @@ class PostCard extends StatelessWidget {
     if (parts.length >= 2) return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
     return name.isNotEmpty ? name[0].toUpperCase() : '?';
   }
+
+  @override
+  Widget build(BuildContext context) {
+   return Padding(
+    padding: const EdgeInsets.symmetric(horizontal:16, vertical: 12),
+    child: Column (
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Author row
+        Row(
+          children: [
+            CircleAvatar(
+              backgroundColor: _avatarColor(post.authorName),
+              child: Text(_initials(post.authorName),
+                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 12)),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(post.authorName, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
+                  Text(
+                      '${post.authorBranch} • ${post.authorYear} · ${timeago.format(post.createdAt)}',
+                      style: TextStyle(fontSize: 11,
+                      color: Colors.grey.shade500)),
+                ],
+              ),
+            ),
+
+            if (post.community != 'General')
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              decoration: BoxDecoration(
+                color: Colors.indigo.shade50,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(post.community, style: const TextStyle(fontSize: 10, color: Colors.indigo)),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+
+        // Post content
+        Text(post.content, style: const TextStyle(fontSize: 14, height: 1.4)),
+        const SizedBox(height: 10),
+
+        // Actions
+        Row(
+          children: [
+            GestureDetector(
+              onTap: onLike,
+              child: Row(
+                children: [
+                  Icon(isLiked ? Icons.favorite : Icons.favorite_border, size: 18, color: isLiked ? Colors.red : Colors.grey),
+                  const SizedBox(width: 4),
+                  Text('${post.likes.length}', style: TextStyle(fontSize: 12, color: isLiked ? Colors.red : Colors.grey)),
+                ],
+              ),            
+            ),
+            const SizedBox(width: 16),
+            Row(
+              children: [
+                const Icon(Icons.chat_bubble_outlined, size: 18, color: Colors.grey),
+                const SizedBox(width: 4),
+                Text('${post.commentCount}', style: const TextStyle(fontSize: 12, color: Colors.grey)),
+              ],
+            ),
+            const Spacer(),
+            Row(
+              children: [
+                const Icon(Icons.chat_bubble_outline, size: 18, color: Colors.grey),
+                const SizedBox(width: 4),
+                Text('${post.commentCount}', style: const TextStyle(fontSize: 12, color: Colors.grey)),
+              ],
+            ),
+            const Spacer(),
+            const Icon(Icons.bookmark_border, size: 18, color: Colors.grey),
+          ],
+        ),
+      ],
+    ),
+   ); 
+  }
 }
