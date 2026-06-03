@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PostModel {
-
   final String id;
   final String authorId;
   final String authorName;
@@ -26,20 +25,19 @@ class PostModel {
     required this.createdAt,
   });
 
-  //get data from firestore
-  factory PostModel.fromMap(DocumentSnapshot doc) {
-    final map = doc.data() as Map<String, dynamic>;
+  factory PostModel.fromDoc(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
     return PostModel(
       id: doc.id,
-      authorId: map['authorId'] ?? '',
-      authorName: map['authorName'] ?? '',
-      authorBranch: map['authorBranch'] ?? '',
-      authorYear: map['authorYear'] ?? '',
-      content: map['content'] ?? '',
-      likes: List<String>.from(map['likes'] ?? []),
-      commentCount: map['commentCount'] ?? 0,
-      community: map['community'] ?? '',
-      createdAt: map['createdAt'].toDate() ?? DateTime.now(),
+      authorId: data['authorId'] ?? '',
+      authorName: data['authorName'] ?? '',
+      authorBranch: data['authorBranch'] ?? '',
+      authorYear: data['authorYear'] ?? '',
+      content: data['content'] ?? '',
+      likes: List<String>.from(data['likes'] ?? []),
+      commentCount: data['commentCount'] ?? 0,
+      community: data['community'] ?? 'General',
+      createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
     );
   }
 }
