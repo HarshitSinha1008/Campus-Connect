@@ -19,7 +19,7 @@ class CommunityModel {
 }
 
 // Static list - no Firestore needed for communities
-final List<CommunityModel> communities = [
+final List<CommunityModel> appcommunities = [
   CommunityModel(
     id: 'CSE',
     name: 'Computer Science (CSE)',
