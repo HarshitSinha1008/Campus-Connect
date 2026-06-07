@@ -65,6 +65,7 @@ class CommunityDetailScreen extends StatelessWidget {
           ),
 
           //Tabs
+          
         ],
       ),
     );
