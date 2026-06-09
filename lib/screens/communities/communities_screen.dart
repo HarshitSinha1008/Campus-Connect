@@ -14,7 +14,7 @@ class _CommunitiesScreenState extends State<CommunitiesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final filtered = appCommunities
+    final filtered = appcommunities
         .where((c) => c.name.toLowerCase().contains(_search.toLowerCase()))
         .toList();
     return Column(
@@ -79,7 +79,7 @@ class _CommunitiesScreenState extends State<CommunitiesScreen> {
                     overflow: TextOverflow.ellipsis,
                   ),
                 trailing: Text(
-                  '${community.members} members',
+                  '${community.membersCount} members',
                   style: TextStyle(
                     fontSize: 10,
                     color: Colors.grey.shade400,
