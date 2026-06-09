@@ -47,7 +47,44 @@ class ProfileScreen extends StatelessWidget {
                     .snapshots()
                     .map((snap) => snap.docs.map((doc) => PostModel.fromDoc(doc)).toList()),
                 builder: (context, postSnap) {
+                    final posts = postSnap.data ?? [];
+                    final totalLikes = posts.fold<int>(
+                      0, (sum, p) => sum + p.likes.length);
                     
+                    return SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          // Settings icon row
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text('Profile', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                                IconButton(
+                                  icon: const Icon(Icons.logout_outlined),
+                                  onPressed: () async {
+                                    await AuthService().logout();
+                                    if (context.mounted) {
+                                      Navigator.pushAndRemoveUntil(
+                                        context, 
+                                        MaterialPageRoute(
+                                          builder: (_) => const LoginScreen(),
+                                        ),
+                                        (route) => false
+                                      );
+                                    }
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          // Profile header card
+                          
+                        ],
+                      ),
+                    );
                 }
             );
         }
