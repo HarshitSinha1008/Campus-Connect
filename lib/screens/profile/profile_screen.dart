@@ -214,7 +214,33 @@ class ProfileScreen extends StatelessWidget {
                                           ],
                                         ),
                                         const SizedBox(height: 6),
-                                        
+                                        Text(post.content,
+                                          style: const TextStyle(fontSize: 13),
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis
+                                        ),
+                                        const SizedBox(height: 6),
+                                        Row(
+                                          children: [
+                                            Icon(Icons.favorite_border,
+                                              size: 14, color: Colors.grey.shade400),
+                                            const SizedBox(width: 4),
+                                            Text('${post.likes.length}',
+                                              style: TextStyle(
+                                                fontSize: 11,
+                                                color: Colors.grey.shade400
+                                              )),
+                                            const SizedBox(width: 12),
+                                            Icon(Icons.chat_bubble_outline,
+                                              size: 14, color: Colors.grey.shade400),
+                                            const SizedBox(width: 4),
+                                            Text('${post.commentCount}',
+                                              style: TextStyle(
+                                                fontSize: 11,
+                                                color: Colors.grey.shade400
+                                              )),
+                                          ],
+                                        ),
                                       ],
                                     ),
                                   );
@@ -225,9 +251,46 @@ class ProfileScreen extends StatelessWidget {
                         ],
                       ),
                     );
-                }
+                },
             );
-        }
+        },
+    );
+  }
+}
+
+class _StatBox extends StatelessWidget {
+  final String value;
+  final String label;
+
+  const _StatBox({required this.value, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        margin: const EdgeInsets.symmetric(horizontal: 4),
+        decoration: BoxDecoration(
+          color: Colors.grey.shade50,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.grey.shade200),
+        ),
+        child: Column(
+          children: [
+            Text(value,
+              style: const TextStyle(
+                fontSize: 20, fontWeight: FontWeight.bold,
+                color: Colors.indigo
+              )),
+            const SizedBox(height: 2),
+            Text(label,
+              style: const TextStyle(
+                fontSize: 11,
+                color: Colors.grey
+              )),
+          ],
+        ),
+      ),
     );
   }
 }
