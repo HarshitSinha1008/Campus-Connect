@@ -5,6 +5,8 @@ import 'package:campus_connect/services/auth_service.dart';
 import 'package:campus_connect/screens/feed/feed_screen.dart';
 import 'package:campus_connect/screens/createpost/create_post_screen.dart';
 import 'login_screen.dart';
+import 'package:campus_connect/screens/communities/communities_screen.dart';
+import 'package:campus_connect/screens/profile/profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -18,8 +20,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final _screens = const [
     FeedScreen(),
-    SizedBox(),           // Communities — Week 3
-    SizedBox(),           // Profile — Week 3
+    CommunitiesScreen(),           // Communities — Week 3
+    SizedBox(),
+    ProfileScreen(),           // Profile — Week 3
   ];
 
   @override
@@ -101,23 +104,32 @@ class _HomeScreenState extends State<HomeScreen> {
       floatingActionButtonLocation:
         FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
-        shape: const CircularNotchedRectangle(),
-        notchMargin: 8,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            IconButton(
-              icon: Icon(Icons.home,
-                color: _currentIndex == 0
-                  ? Colors.indigo : Colors.grey),
-              onPressed: () => setState(() => _currentIndex = 0),
-            ),
-            const SizedBox(width: 40),
-            IconButton(
-              icon: Icon(Icons.person,
-                color: _currentIndex == 2
-                  ? Colors.indigo : Colors.grey),
-              onPressed: () => setState(() => _currentIndex = 2),
+  shape: const CircularNotchedRectangle(),
+  notchMargin: 8,
+  child: Row(
+    mainAxisAlignment: MainAxisAlignment.spaceAround,
+    children: [
+      IconButton(
+        icon: Icon(Icons.home,
+          color: _currentIndex == 0 ? Colors.indigo : Colors.grey),
+        onPressed: () => setState(() => _currentIndex = 0),
+      ),
+      const SizedBox(width: 8),
+      IconButton(
+        icon: Icon(Icons.groups,
+          color: _currentIndex == 1 ? Colors.indigo : Colors.grey),
+        onPressed: () => setState(() => _currentIndex = 1),
+      ),
+      const SizedBox(width: 40), // FAB space
+      IconButton(
+        icon: Icon(Icons.explore,
+          color: _currentIndex == 2 ? Colors.indigo : Colors.grey),  
+        onPressed: () => setState(() => _currentIndex = 2),
+      ),
+      IconButton(
+        icon: Icon(Icons.person,
+          color: _currentIndex == 3 ? Colors.indigo : Colors.grey),
+        onPressed: () => setState(() => _currentIndex = 3),
             ),
           ],
         ),
