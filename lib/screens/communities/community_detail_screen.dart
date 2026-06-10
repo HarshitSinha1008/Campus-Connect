@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:campus_connect/models/community_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:timeago/timeago.dart' as timeago;
 import '../../services/community_service.dart';
 import '../../models/post_model.dart';
 import '../../services/post_service.dart';
