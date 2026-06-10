@@ -139,6 +139,89 @@ class ProfileScreen extends StatelessWidget {
                           const SizedBox(height: 16),
 
                           // Stats row
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: Row(
+                              children: [
+                                _StatBox(
+                                  value: '${posts.length}',
+                                  label: 'Posts',
+                                ),
+                                _StatBox(
+                                  value: '$totalLikes',
+                                  label: 'Likes'),
+                                _StatBox(
+                                  value: '0',
+                                  label: 'Communities'),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+
+                          // My posts section
+                          const Padding (
+                            padding: EdgeInsets.symmetric(horizontal: 16),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text('My Posts', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+
+                          // when post is empty
+                          if (posts.isEmpty)
+                            const Padding(
+                              padding: EdgeInsets.all(32),
+                              child: Text('No posts yet',
+                                style: TextStyle(color: Colors.grey)
+                              ),
+                            )
+                          // When post is not empty
+                          else
+                            ListView.separated(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: posts.length,
+                              separatorBuilder: (_, __) => const Divider(height: 1, thickness: 0.5),
+                              itemBuilder: (context, index) {
+                                final post = posts[index];
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 10),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Container(
+                                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                              decoration: BoxDecoration(
+                                                color: Colors.indigo.shade50,
+                                                borderRadius: BorderRadius.circular(20),
+                                              ),
+                                              child: Text(post.community,
+                                                style: const TextStyle(
+                                                  color: Colors.indigo,
+                                                  fontSize: 11
+                                                )
+                                              ),
+                                            ),
+                                            const Spacer(),
+                                            Text(timeago.format(post.createdAt), 
+                                              style: TextStyle(
+                                                color: Colors.grey.shade400, 
+                                                fontSize: 10)),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 6),
+                                        
+                                      ],
+                                    ),
+                                  );
+
+                                
+                              }
+                            ),
                         ],
                       ),
                     );
