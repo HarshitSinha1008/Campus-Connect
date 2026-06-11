@@ -84,13 +84,6 @@ class _HomeScreenState extends State<HomeScreen> {
             },
           ),
         ],
-        bottom: _currentIndex == 0
-          ? const TabBar(
-              tabs: [Tab(text: 'Home'), Tab(text: 'Communities')],
-              labelColor: Colors.indigo,
-              indicatorColor: Colors.indigo,
-            )
-          : null,
       ),
       body: _screens[_currentIndex],
       floatingActionButton: FloatingActionButton(

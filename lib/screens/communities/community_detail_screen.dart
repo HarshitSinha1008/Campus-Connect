@@ -64,9 +64,10 @@ class CommunityDetailScreen extends StatelessWidget {
           ),
 
           //Tabs
-          DefaultTabController(
-            length: 2,
-            child: Expanded(child: Column(
+            Expanded(
+              child: DefaultTabController(
+                length: 2,
+              child: Column(
               children:[
                 TabBar(
                   labelColor: Colors.indigo,
