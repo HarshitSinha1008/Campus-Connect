@@ -5,6 +5,7 @@ import 'package:campus_connect/services/auth_service.dart';
 import 'package:campus_connect/models/post_model.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:campus_connect/screens/auth/login_screen.dart';
+import 'edit_profile_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -52,21 +53,39 @@ class ProfileScreen extends StatelessWidget {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const Text('Profile', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                                IconButton(
-                                  icon: const Icon(Icons.logout_outlined),
-                                  onPressed: () async {
-                                    await AuthService().logout();
-                                    if (context.mounted) {
-                                      Navigator.pushAndRemoveUntil(
-                                        context, 
-                                        MaterialPageRoute(
-                                          builder: (_) => const LoginScreen(),
-                                        ),
-                                        (route) => false
-                                      );
-                                    }
-                                  },
+                                const Text('Profile',
+                                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                                Row(
+                                  children: [
+                                    IconButton(
+                                      icon: const Icon(Icons.edit_outlined),
+                                      onPressed: () async {
+                                        final updated = await Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) => EditProfileScreen(userData: user),
+                                          ),
+                                        );
+                                        // Refresh profile if saved
+                                        if (updated == true && context.mounted) {
+                                          (context as Element).markNeedsBuild();
+                                        }
+                                      },
+                                    ),
+                                    IconButton(
+                                      icon: const Icon(Icons.logout_outlined),
+                                      onPressed: () async {
+                                        await AuthService().logout();
+                                        if (context.mounted) {
+                                          Navigator.pushAndRemoveUntil(
+                                            context,
+                                            MaterialPageRoute(builder: (_) => const LoginScreen()),
+                                            (route) => false,
+                                          );
+                                        }
+                                      },
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
@@ -91,13 +110,15 @@ class ProfileScreen extends StatelessWidget {
                                   CircleAvatar(
                                     radius: 28,
                                     backgroundColor: Colors.white.withValues(alpha: 0.3),
-                                    child: Text(_initials(name),
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w600
-                                    ),
-                                  ), 
+                                    backgroundImage: user['photoUrl'] != null
+                                        ? NetworkImage(user['photoUrl']) : null,
+                                    child: user['photoUrl'] == null
+                                        ? Text(_initials(name),
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w600))
+                                        : null,
                                   ),
                                   const SizedBox(width: 14), 
                                   Expanded(
@@ -128,6 +149,13 @@ class ProfileScreen extends StatelessWidget {
                               ),
                             ),
                           ),
+                          if (user['bio'] != null && user['bio'].toString().isNotEmpty)
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+                              child: Text(user['bio'],
+                                style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
+                                textAlign: TextAlign.center)
+                            ),
                           const SizedBox(height: 16),
 
                           // Stats row
