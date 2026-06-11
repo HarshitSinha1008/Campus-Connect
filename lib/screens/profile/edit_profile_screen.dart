@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'dart:convert';
 import 'package:image_picker/image_picker.dart';
 
 class EditProfileScreen extends StatefulWidget {
@@ -51,16 +51,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     }
   }
 
-  Future<String?> _uploadPhoto(String uid) async {
+  Future<String?> _encodeImage() async {
     if (_pickedImage == null) return _existingPhotoUrl;
-
-    final ref = FirebaseStorage.instance
-        .ref()
-        .child('profile_photos')
-        .child('$uid.jpg');
-
-    await ref.putFile(_pickedImage!);
-    return await ref.getDownloadURL();
+    final bytes = await _pickedImage!.readAsBytes();
+    return base64Encode(bytes);
   }
 
   Future<void> _save() async {
@@ -74,7 +68,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
     try {
       final uid = FirebaseAuth.instance.currentUser!.uid;
-      final photoUrl = await _uploadPhoto(uid);
+      final photoData = await _encodeImage();
 
       await FirebaseFirestore.instance
           .collection('users')
@@ -84,7 +78,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         'branch': _selectedBranch,
         'year': _selectedYear,
         'bio': _bioController.text.trim(),
-        if (photoUrl != null) 'photoUrl': photoUrl,
+        if (photoData != null) 'photoUrl': photoData,
       });
 
       if (mounted) Navigator.pop(context, true);
@@ -146,7 +140,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     backgroundImage: _pickedImage != null
                         ? FileImage(_pickedImage!)
                         : (_existingPhotoUrl != null
-                            ? NetworkImage(_existingPhotoUrl!)
+                            ? MemoryImage(base64Decode(_existingPhotoUrl!))
                             : null) as ImageProvider?,
                     child: (_pickedImage == null && _existingPhotoUrl == null)
                         ? Text(
