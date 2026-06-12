@@ -59,7 +59,50 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
+      backgroundColor: const Color(0xFF4F46E5),
+      body: Center(
+        child: FadeTransition(
+          opacity: _fadeAnim,
+          child: ScaleTransition(
+            scale: _scaleAnim,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Logo
+                Container(
+                  width: 90,
+                  height: 90,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.2),
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: const Icon(Icons.groups_rounded,
+                    size: 52, color: Colors.white),
+                ),
+                const SizedBox(height: 20),
+
+                // App name
+                RichText(
+                  text: const TextSpan(
+                    style: TextStyle(
+                      fontSize: 32, fontWeight: FontWeight.bold
+                    ),
+                    children: [
+                      TextSpan(text: 'Campus', style: TextStyle(color: Colors.white)),
+                      TextSpan(text: 'Connect', style: TextStyle(color: Color(0xFFA5B4FC))),
+                    ],
+                  ), 
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'Connect. Share. Grow. Together', 
+                  style: TextStyle(color: Colors.white70, fontSize: 13),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
