@@ -6,6 +6,7 @@ import 'package:campus_connect/models/post_model.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:campus_connect/screens/auth/login_screen.dart';
 import 'edit_profile_screen.dart';
+import 'dart:convert';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -111,7 +112,8 @@ class ProfileScreen extends StatelessWidget {
                                     radius: 28,
                                     backgroundColor: Colors.white.withValues(alpha: 0.3),
                                     backgroundImage: user['photoUrl'] != null
-                                        ? NetworkImage(user['photoUrl']) : null,
+                                        ? MemoryImage(base64Decode(user['photoUrl']))
+                                        : null,
                                     child: user['photoUrl'] == null
                                         ? Text(_initials(name),
                                             style: const TextStyle(
