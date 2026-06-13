@@ -69,7 +69,40 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications_outlined),
-            onPressed: () {},
+            onPressed: () {
+                  showModalBottomSheet(
+                    context: context,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                    ),
+                    builder: (_) => Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            width: 40, height: 4,
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade300,
+                              borderRadius: BorderRadius.circular(2),
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          const Text('Notifications',
+                            style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold)),
+                          const SizedBox(height: 24),
+                          Icon(Icons.notifications_none,
+                            size: 48, color: Colors.grey.shade300),
+                          const SizedBox(height: 12),
+                          Text('No notifications yet',
+                            style: TextStyle(color: Colors.grey.shade500)),
+                          const SizedBox(height: 32),
+                        ],
+                      ),
+                    ),
+                  );
+            },
           ),
           IconButton(
             icon: const Icon(Icons.logout),
