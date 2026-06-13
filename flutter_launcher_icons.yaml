@@ -2,3 +2,4 @@ flutter_launcher_icons:
   android: true
   ios: false
   image_path: "assets/icon/campus_connect.png"
+  adaptive_icon_background: "#4F46E5"
