@@ -7,6 +7,7 @@ import 'package:campus_connect/screens/createpost/create_post_screen.dart';
 import 'login_screen.dart';
 import 'package:campus_connect/screens/communities/communities_screen.dart';
 import 'package:campus_connect/screens/profile/profile_screen.dart';
+import 'package:campus_connect/screens/explorer/explorer_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -18,11 +19,11 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
 
-  final _screens = const [
-    FeedScreen(),
-    CommunitiesScreen(),           // Communities — Week 3
-    SizedBox(),
-    ProfileScreen(),           // Profile — Week 3
+  final List<Widget> _screens = [
+    const FeedScreen(),
+    const CommunitiesScreen(),           // Communities — Week 3
+    const ExplorerScreen(),
+    const ProfileScreen(),           // Profile — Week 3
   ];
 
   @override
