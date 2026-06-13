@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:campus_connect/models/community_model.dart';
 import 'community_detail_screen.dart';
+import 'package:campus_connect/services/community_service.dart';
 
 class CommunitiesScreen extends StatefulWidget {
   const CommunitiesScreen({super.key});
@@ -78,13 +79,18 @@ class _CommunitiesScreenState extends State<CommunitiesScreen> {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                trailing: Text(
-                  '${community.membersCount} members',
-                  style: TextStyle(
-                    fontSize: 10,
-                    color: Colors.grey.shade400,
-                  ),
-                ),
+                trailing: StreamBuilder<int>(
+                  stream: CommunityService().getMemberCountStream(community.id),
+                  builder: (context, snapshot) {
+                    final count = snapshot.data ?? 0;
+                    return Text(
+                      '$count members',
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: Colors.grey.shade400
+                      ),
+                    );
+                  })
               );
             },
           ),
