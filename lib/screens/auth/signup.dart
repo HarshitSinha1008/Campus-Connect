@@ -20,7 +20,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool _isLoading = false;
   String _error = '';
 
-  final _branches = ['CSE', 'ECE', 'ME', 'CE', 'EEE'];
+  final _branches = ['CSE', 'ECE', 'ME', 'CE', 'EEE', 'IT', 'MBA', 'Other'];
   final _years = ['1st Year', '2nd Year', '3rd Year', '4th Year'];
 
   Future<void> _signUp() async {

@@ -24,7 +24,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   String? _existingPhotoUrl;
   bool _isSaving = false;
 
-  final _branches = ['CSE', 'ECE', 'ME', 'CE', 'EE', 'IT', 'MBA', 'Other'];
+  final _branches = ['CSE', 'ECE', 'ME', 'CE', 'EEE', 'IT', 'MBA', 'Other'];
   final _years = ['1st Year', '2nd Year', '3rd Year', '4th Year'];
 
   @override
@@ -34,8 +34,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         text: widget.userData['name'] ?? '');
     _bioController = TextEditingController(
         text: widget.userData['bio'] ?? '');
-    _selectedBranch = widget.userData['branch'] ?? 'CSE';
-    _selectedYear = widget.userData['year'] ?? '1st Year';
+    final savedBranch = widget.userData['branch'] ?? 'CSE';
+    _selectedBranch = _branches.contains(savedBranch) ? savedBranch : 'CSE';
+    final savedYear = widget.userData['year'] ?? '1st Year';
+    _selectedYear = _years.contains(savedYear) ? savedYear : '1st Year';
     _existingPhotoUrl = widget.userData['photoUrl'];
   }
 
