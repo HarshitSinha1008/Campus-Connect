@@ -41,7 +41,7 @@ final List<CommunityModel> appcommunities = [
     name: 'Electrical and Electronics Engineering (EEE)',
     description: 'Talk about circuits, power systems and more.',
     color: const Color.fromARGB(255, 232, 240, 82),
-    icon: Icons.code,
+    icon: Icons.memory,
     membersCount: 523,
   ),
   CommunityModel(
@@ -49,7 +49,7 @@ final List<CommunityModel> appcommunities = [
     name: 'Mechanical Engineering (ME)',
     description: 'Everything about machines, design and manufacturing.',
     color: Colors.purple.shade600,
-    icon: Icons.code,
+    icon: Icons.settings,
     membersCount: 523,
   ),
   CommunityModel(
@@ -57,7 +57,7 @@ final List<CommunityModel> appcommunities = [
     name: 'Master of Business Administration (MBA)',
     description: 'Discuss business strategies, management and leadership.',
     color: Colors.green.shade600,
-    icon: Icons.code,
+    icon: Icons.business_center,
     membersCount: 523,
   ),
   CommunityModel(
@@ -65,7 +65,7 @@ final List<CommunityModel> appcommunities = [
     name: 'Sports',
     description: 'Sports updates, games and physical activities.',
     color: Colors.orange.shade600,
-    icon: Icons.sports,
+    icon: Icons.sports_soccer,
     membersCount: 523,
   ),
   CommunityModel(
@@ -81,7 +81,7 @@ final List<CommunityModel> appcommunities = [
     name: 'General',
     description: 'General discussions.',
     color: Colors.amber.shade700,
-    icon: Icons.chat,
+    icon: Icons.chat_bubble_outline,
     membersCount: 523,
   ),
 ];
