@@ -7,6 +7,7 @@ import 'package:campus_connect/models/post_model.dart';
 import 'package:campus_connect/services/auth_service.dart';
 import 'edit_profile_screen.dart';
 import 'package:campus_connect/screens/auth/login_screen.dart';
+import 'package:campus_connect/screens/about_me/about_developer.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -327,6 +328,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         );
                       },
                     ),
+
+                    const SizedBox(height: 16),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: OutlinedButton.icon(
+                        onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const AboutDeveloper()),
+                        ),
+                        icon: const Icon(Icons.person_outline, size: 18),
+                        label: const Text('About Developer'),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: Colors.indigo,
+                          side: const BorderSide(color: Colors.indigo),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          minimumSize: const Size(double.infinity, 0),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 32),
                 ],
               ),
             );
