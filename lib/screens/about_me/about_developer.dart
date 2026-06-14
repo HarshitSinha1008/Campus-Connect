@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AboutDeveloper extends StatelessWidget {
   const AboutDeveloper({super.key});
@@ -145,18 +146,21 @@ class AboutDeveloper extends StatelessWidget {
                     color: Colors.black,
                     label: 'GitHub',
                     value: 'https://github.com/HarshitSinha1008',
+                    url: 'https://github.com/HarshitSinha1008',
                   ),
                   _LinkRow(
                     icon: Icons.email_outlined,
                     color: Colors.red,
                     label: 'Email',
                     value: 'harshitsinha55@gmail.com',
+                    url: 'mailto:harshitsinha55@gmail',
                   ),
                   _LinkRow(
                     icon: Icons.link,
                     color: Colors.blue,
                     label: 'linedin',
-                    value: 'www.linkedin.com/in/harshit-ranjan-sinha-b0034b32b',
+                    value: 'Harshit Ranjan Sinha',
+                    url: 'https://www.linkedin.com/in/harshit-ranjan-sinha-b0034b32b/',
                   ),
                 ],
               ),
@@ -287,44 +291,62 @@ class _LinkRow extends StatelessWidget {
   final Color color;
   final String label;
   final String value;
+  final String url;       // ← add this
 
   const _LinkRow({
     required this.icon,
     required this.color,
     required this.label,
     required this.value,
+    required this.url,    // ← add this
   });
+
+  Future<void> _launch() async {
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5),
-      child: Row(
-        children: [
-          Container(
-            width: 32, height: 32,
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(8),
+    return GestureDetector(
+      onTap: _launch,          // ← tap to open
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 5),
+        child: Row(
+          children: [
+            Container(
+              width: 32, height: 32,
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(icon, size: 18, color: color),
             ),
-            child: Icon(icon, size: 18, color: color),
-          ),
-          const SizedBox(width: 12),
-          Text(label,
-            style: const TextStyle(
-              fontSize: 13, fontWeight: FontWeight.w500)),
-          const SizedBox(width: 8),
-          // ← wrap in Expanded so long text doesn't overflow
-          Expanded(
-            child: Text(value,
-              style: TextStyle(
-                fontSize: 12, color: Colors.grey.shade500),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.end,
+            const SizedBox(width: 12),
+            Text(label,
+              style: const TextStyle(
+                fontSize: 13, fontWeight: FontWeight.w500)),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(value,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.indigo.shade400,  // ← looks clickable
+                  decoration: TextDecoration.underline,
+                  decorationColor: Colors.indigo.shade400,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.end,
+              ),
             ),
-          ),
-        ],
+            const SizedBox(width: 6),
+            Icon(Icons.arrow_outward,    // ← external link icon
+              size: 14, color: Colors.indigo.shade300),
+          ],
+        ),
       ),
     );
   }
