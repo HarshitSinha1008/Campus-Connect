@@ -154,7 +154,7 @@ class AboutDeveloper extends StatelessWidget {
                   ),
                   _LinkRow(
                     icon: Icons.link,
-                    color: Colors.black,
+                    color: Colors.blue,
                     label: 'linedin',
                     value: 'www.linkedin.com/in/harshit-ranjan-sinha-b0034b32b',
                   ),
@@ -313,10 +313,17 @@ class _LinkRow extends StatelessWidget {
           Text(label,
             style: const TextStyle(
               fontSize: 13, fontWeight: FontWeight.w500)),
-          const Spacer(),
-          Text(value,
-            style: TextStyle(
-              fontSize: 12, color: Colors.grey.shade500)),
+          const SizedBox(width: 8),
+          // ← wrap in Expanded so long text doesn't overflow
+          Expanded(
+            child: Text(value,
+              style: TextStyle(
+                fontSize: 12, color: Colors.grey.shade500),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.end,
+            ),
+          ),
         ],
       ),
     );
