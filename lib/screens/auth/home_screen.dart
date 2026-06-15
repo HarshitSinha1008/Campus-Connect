@@ -19,11 +19,12 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
 
-  final List<Widget> _screens = [
-    const FeedScreen(),
-    const CommunitiesScreen(),           // Communities — Week 3
-    const ExplorerScreen(),
-    const ProfileScreen(),           // Profile — Week 3
+  // Defined outside build — never recreated
+  final List<Widget> _screens = const [
+    FeedScreen(),
+    CommunitiesScreen(),
+    ExplorerScreen(),
+    ProfileScreen(),
   ];
 
   @override
@@ -32,31 +33,35 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.white,
         title: Row(
           children: [
             FutureBuilder<DocumentSnapshot>(
               future: FirebaseFirestore.instance
-                .collection('users').doc(uid).get(),
+                  .collection('users').doc(uid).get(),
               builder: (context, snapshot) {
                 final name = snapshot.hasData
-                  ? (snapshot.data!.data()
-                      as Map<String, dynamic>)['name'] ?? ''
-                  : '';
+                    ? (snapshot.data!.data()
+                        as Map<String, dynamic>)['name'] ?? ''
+                    : '';
                 return CircleAvatar(
                   radius: 15,
                   backgroundColor: Colors.indigo,
                   child: Text(
                     name.isNotEmpty ? name[0].toUpperCase() : '?',
-                    style: const TextStyle(color: Colors.white,
-                      fontSize: 12)),
+                    style: const TextStyle(
+                      color: Colors.white, fontSize: 12)),
                 );
               },
             ),
             const SizedBox(width: 10),
             RichText(
               text: const TextSpan(
-                style: TextStyle(fontSize: 18,
-                  fontWeight: FontWeight.bold, color: Colors.black),
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black),
                 children: [
                   TextSpan(text: 'Campus'),
                   TextSpan(text: 'Connect',
@@ -68,50 +73,55 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.notifications_outlined),
+            icon: const Icon(Icons.notifications_outlined,
+              color: Colors.black),
             onPressed: () {
-                  showModalBottomSheet(
-                    context: context,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-                    ),
-                    builder: (_) => Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            width: 40, height: 4,
-                            decoration: BoxDecoration(
-                              color: Colors.grey.shade300,
-                              borderRadius: BorderRadius.circular(2),
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-                          const Text('Notifications',
-                            style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold)),
-                          const SizedBox(height: 24),
-                          Icon(Icons.notifications_none,
-                            size: 48, color: Colors.grey.shade300),
-                          const SizedBox(height: 12),
-                          Text('No notifications yet',
-                            style: TextStyle(color: Colors.grey.shade500)),
-                          const SizedBox(height: 32),
-                        ],
+              showModalBottomSheet(
+                context: context,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(20)),
+                ),
+                builder: (_) => Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: 40, height: 4,
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade300,
+                          borderRadius: BorderRadius.circular(2),
+                        ),
                       ),
-                    ),
-                  );
+                      const SizedBox(height: 16),
+                      const Text('Notifications',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 24),
+                      Icon(Icons.notifications_none,
+                        size: 48, color: Colors.grey.shade300),
+                      const SizedBox(height: 12),
+                      Text('No notifications yet',
+                        style: TextStyle(
+                          color: Colors.grey.shade500)),
+                      const SizedBox(height: 32),
+                    ],
+                  ),
+                ),
+              );
             },
           ),
           IconButton(
-            icon: const Icon(Icons.logout),
+            icon: const Icon(Icons.logout, color: Colors.black),
             onPressed: () async {
               await AuthService().logout();
               if (context.mounted) {
                 Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(builder: (_) => const LoginScreen()),
+                  MaterialPageRoute(
+                    builder: (_) => const LoginScreen()),
                   (route) => false,
                 );
               }
@@ -119,44 +129,55 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: _screens[_currentIndex],
+
+      // ← IndexedStack keeps all screens alive
+      body: IndexedStack(
+        index: _currentIndex,
+        children: _screens,
+      ),
+
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.indigo,
         onPressed: () => Navigator.push(
           context,
-          MaterialPageRoute(builder: (_) => const CreatePostScreen()),
+          MaterialPageRoute(
+            builder: (_) => const CreatePostScreen()),
         ),
         child: const Icon(Icons.add, color: Colors.white),
       ),
       floatingActionButtonLocation:
-        FloatingActionButtonLocation.centerDocked,
+          FloatingActionButtonLocation.centerDocked,
+
       bottomNavigationBar: BottomAppBar(
-  shape: const CircularNotchedRectangle(),
-  notchMargin: 8,
-  child: Row(
-    mainAxisAlignment: MainAxisAlignment.spaceAround,
-    children: [
-      IconButton(
-        icon: Icon(Icons.home,
-          color: _currentIndex == 0 ? Colors.indigo : Colors.grey),
-        onPressed: () => setState(() => _currentIndex = 0),
-      ),
-      const SizedBox(width: 8),
-      IconButton(
-        icon: Icon(Icons.groups,
-          color: _currentIndex == 1 ? Colors.indigo : Colors.grey),
-        onPressed: () => setState(() => _currentIndex = 1),
-      ),
-      const SizedBox(width: 40), // FAB space
-      IconButton(
-        icon: Icon(Icons.explore,
-          color: _currentIndex == 2 ? Colors.indigo : Colors.grey),  
-        onPressed: () => setState(() => _currentIndex = 2),
-      ),
-      IconButton(
-        icon: Icon(Icons.person,
-          color: _currentIndex == 3 ? Colors.indigo : Colors.grey),
-        onPressed: () => setState(() => _currentIndex = 3),
+        shape: const CircularNotchedRectangle(),
+        notchMargin: 8,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            IconButton(
+              icon: Icon(Icons.home,
+                color: _currentIndex == 0
+                    ? Colors.indigo : Colors.grey),
+              onPressed: () => setState(() => _currentIndex = 0),
+            ),
+            IconButton(
+              icon: Icon(Icons.groups,
+                color: _currentIndex == 1
+                    ? Colors.indigo : Colors.grey),
+              onPressed: () => setState(() => _currentIndex = 1),
+            ),
+            const SizedBox(width: 40),
+            IconButton(
+              icon: Icon(Icons.explore,
+                color: _currentIndex == 2
+                    ? Colors.indigo : Colors.grey),
+              onPressed: () => setState(() => _currentIndex = 2),
+            ),
+            IconButton(
+              icon: Icon(Icons.person,
+                color: _currentIndex == 3
+                    ? Colors.indigo : Colors.grey),
+              onPressed: () => setState(() => _currentIndex = 3),
             ),
           ],
         ),

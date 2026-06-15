@@ -16,7 +16,49 @@ class ProfileScreen extends StatefulWidget {
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _ProfileScreenState extends State<ProfileScreen>
+    with AutomaticKeepAliveClientMixin {
+
+  final String uid = FirebaseAuth.instance.currentUser!.uid;
+
+  late final Stream<DocumentSnapshot> _userStream;
+  late final Stream<QuerySnapshot> _postsStream;
+  late final Stream<QuerySnapshot> _communitiesStream;
+
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    super.initState();
+    _userStream = FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .snapshots();
+
+    _postsStream = FirebaseFirestore.instance
+        .collection('posts')
+        .where('authorId', isEqualTo: uid)
+        .orderBy('createdAt', descending: true)
+        .snapshots();
+
+    _communitiesStream = FirebaseFirestore.instance
+        .collection('communities')
+        .where('memberIds', arrayContains: uid)
+        .snapshots();
+
+     FirebaseFirestore.instance
+      .collection('posts')
+      .where('authorId', isEqualTo: uid)
+      .get()
+      .then((snap) {
+        print('DEBUG: uid = $uid');
+        print('DEBUG: total posts found = ${snap.docs.length}');
+        for (var doc in snap.docs) {
+          print('DEBUG: post = ${doc.data()}');
+        }
+      });  
+  }
 
   String _initials(String name) {
     final parts = name.trim().split(' ');
@@ -26,11 +68,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final uid = FirebaseAuth.instance.currentUser!.uid;
+    super.build(context);
 
-    return FutureBuilder<DocumentSnapshot>(
-      future: FirebaseFirestore.instance
-          .collection('users').doc(uid).get(),
+    return StreamBuilder<DocumentSnapshot>(
+      stream: _userStream,
       builder: (context, userSnap) {
         if (!userSnap.hasData) {
           return const Center(child: CircularProgressIndicator());
@@ -42,23 +83,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
         final year = user['year'] ?? '';
         final email = user['email'] ?? '';
 
-        return StreamBuilder<List<PostModel>>(
-          stream: FirebaseFirestore.instance
-              .collection('posts')
-              .where('authorId', isEqualTo: uid)
-              .orderBy('createdAt', descending: true)
-              .snapshots()
-              .map((snap) => snap.docs
-                  .map((doc) => PostModel.fromDoc(doc))
-                  .toList()),
+        return StreamBuilder<QuerySnapshot>(
+          stream: _postsStream,
           builder: (context, postSnap) {
-            final posts = postSnap.data ?? [];
+            // Keep previous data while loading to prevent flicker
+            final docs = postSnap.data?.docs ?? [];
+            final posts = docs
+                .map((doc) => PostModel.fromDoc(doc))
+                .toList();
             final totalLikes = posts.fold<int>(
                 0, (sum, p) => sum + p.likes.length);
 
             return SingleChildScrollView(
               child: Column(
                 children: [
+
                   // Header row
                   Padding(
                     padding: const EdgeInsets.symmetric(
@@ -72,23 +111,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             fontWeight: FontWeight.bold)),
                         Row(
                           children: [
-                            // Edit button
                             IconButton(
                               icon: const Icon(Icons.edit_outlined),
                               onPressed: () async {
-                                final updated = await Navigator.push(
+                                await Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (_) =>
-                                        EditProfileScreen(userData: user),
+                                    builder: (_) => EditProfileScreen(
+                                      userData: user),
                                   ),
                                 );
-                                if (updated == true && mounted) {
-                                  setState(() {});
-                                }
                               },
                             ),
-                            // Logout button
                             IconButton(
                               icon: const Icon(Icons.logout_outlined),
                               onPressed: () async {
@@ -125,7 +159,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       child: Row(
                         children: [
-                          // Avatar
                           CircleAvatar(
                             radius: 28,
                             backgroundColor:
@@ -143,8 +176,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 : null,
                           ),
                           const SizedBox(width: 14),
-
-                          // Name, branch, email
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -164,7 +195,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   style: TextStyle(
                                     color: Colors.white.withValues(
                                         alpha: 0.7),
-                                    fontSize: 11)),
+                                    fontSize: 11),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis),
                               ],
                             ),
                           ),
@@ -198,15 +231,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         _StatBox(
                           value: '$totalLikes',
                           label: 'Likes'),
-                        // Dynamic communities count
                         StreamBuilder<QuerySnapshot>(
-                          stream: FirebaseFirestore.instance
-                              .collection('communities')
-                              .where('memberIds', arrayContains: uid)
-                              .snapshots(),
-                          builder: (context, snapshot) {
-                            final count =
-                                snapshot.data?.docs.length ?? 0;
+                          stream: _communitiesStream,
+                          builder: (context, snap) {
+                            final count = snap.data?.docs.length ?? 0;
                             return _StatBox(
                               value: '$count',
                               label: 'Communities');
@@ -230,8 +258,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   const SizedBox(height: 8),
 
-                  // Posts list
-                  if (posts.isEmpty)
+                  // Posts list or empty state
+                  if (postSnap.connectionState == ConnectionState.waiting
+                      && docs.isEmpty)
+                    const Padding(
+                      padding: EdgeInsets.all(32),
+                      child: CircularProgressIndicator(),
+                    )
+                  else if (posts.isEmpty)
                     Padding(
                       padding: const EdgeInsets.all(32),
                       child: Column(
@@ -329,28 +363,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       },
                     ),
 
-                    const SizedBox(height: 16),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: OutlinedButton.icon(
-                        onPressed: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const AboutDeveloper()),
-                        ),
-                        icon: const Icon(Icons.person_outline, size: 18),
-                        label: const Text('About Developer'),
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: Colors.indigo,
-                          side: const BorderSide(color: Colors.indigo),
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          minimumSize: const Size(double.infinity, 0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12)),
-                        ),
+                  // About Developer button
+                  const SizedBox(height: 16),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: OutlinedButton.icon(
+                      onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const AboutDeveloper()),
+                      ),
+                      icon: const Icon(Icons.person_outline, size: 18),
+                      label: const Text('About Developer'),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: Colors.indigo,
+                        side: const BorderSide(color: Colors.indigo),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        minimumSize: const Size(double.infinity, 0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
                       ),
                     ),
-                    const SizedBox(height: 32),
+                  ),
+                  const SizedBox(height: 32),
                 ],
               ),
             );

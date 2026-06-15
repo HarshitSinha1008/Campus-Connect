@@ -158,7 +158,7 @@ class AboutDeveloper extends StatelessWidget {
                   _LinkRow(
                     icon: Icons.link,
                     color: Colors.blue,
-                    label: 'linedin',
+                    label: 'linkedin',
                     value: 'Harshit Ranjan Sinha',
                     url: 'https://www.linkedin.com/in/harshit-ranjan-sinha-b0034b32b/',
                   ),

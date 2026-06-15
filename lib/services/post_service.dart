@@ -15,6 +15,10 @@ class PostService {
         .map((snap) => snap.docs.map((doc) => PostModel.fromDoc(doc)).toList());
   }
 
+  Future<void> deletePost(String postId) async {
+    await _firestore.collection('posts').doc(postId).delete();
+  }
+
   // Create a new post
   Future<void> createPost({
     required String content,
