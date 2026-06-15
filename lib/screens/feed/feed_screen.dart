@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:campus_connect/models/post_model.dart';
 import 'package:campus_connect/services/post_service.dart';
+import 'package:campus_connect/screens/createpost/comments_screen.dart';
 
 class FeedScreen extends StatelessWidget {
   const FeedScreen({super.key});
@@ -175,19 +176,55 @@ class PostCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 16),
-              Row(
-                children: [
-                  const Icon(Icons.chat_bubble_outline,
-                    size: 18, color: Colors.grey),
-                  const SizedBox(width: 4),
-                  Text('${post.commentCount}',
-                    style: const TextStyle(
-                      fontSize: 12, color: Colors.grey)),
-                ],
+              GestureDetector(
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => CommentsScreen(
+                      postId: post.id,
+                      postContent: post.content,
+                    ),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.chat_bubble_outline,
+                      size: 18, color: Colors.grey),
+                    const SizedBox(width: 4),
+                    Text('${post.commentCount}',
+                      style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                  ],
+                ),
               ),
               const Spacer(),
               const Icon(Icons.bookmark_border,
                 size: 18, color: Colors.grey),
+              
+              if (post.authorId == FirebaseAuth.instance.currentUser!.uid)
+                GestureDetector(
+                  onTap: () async {
+                    final confirm = await showDialog<bool>(
+                      context: context,
+                      builder: (_) => AlertDialog(
+                        title: const Text('Delete Post'),
+                        content: const Text('Are you sure you want to delete this post?'),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, false),
+                            child: const Text('Cancel')),
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, true),
+                            child: const Text('Delete',
+                              style: TextStyle(color: Colors.red))),
+                        ],
+                      ),
+                    );
+                    if (confirm == true) {
+                      await PostService().deletePost(post.id);
+                    }
+                  },
+                  child: const Icon(Icons.more_vert, size: 18, color: Colors.grey),
+                ),
             ],
           ),
         ],
