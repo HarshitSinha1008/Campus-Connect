@@ -21,8 +21,8 @@ class CommunityModel {
 // Static list - no Firestore needed for communities
 final List<CommunityModel> appcommunities = [
   CommunityModel(
-    id: 'CSE',
-    name: 'Computer Science (CSE)',
+    id: 'CSE & Specialization',
+    name: 'Computer Science & Specialization (CSE)',
     description: 'Talk about coding, projects, placements and more.',
     color: Colors.indigo,
     icon: Icons.code,
