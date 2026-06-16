@@ -8,6 +8,7 @@ import 'login_screen.dart';
 import 'package:campus_connect/screens/communities/communities_screen.dart';
 import 'package:campus_connect/screens/profile/profile_screen.dart';
 import 'package:campus_connect/screens/explorer/explorer_screen.dart';
+import 'package:campus_connect/screens/market_place/marketplace_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -131,10 +132,40 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
 
       // ← IndexedStack keeps all screens alive
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _screens,
+      body: Stack(
+        children: [IndexedStack(
+          index: _currentIndex,
+      children: _screens,
+    ),
+
+    // Marketplace button above bottom nav
+    Positioned(
+      bottom: 8,
+      right: 16,
+      child: ElevatedButton.icon(
+        onPressed: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => const MarketplaceScreen()),
+        ),
+        icon: const Icon(Icons.storefront_outlined, size: 16),
+        label: const Text('Market',
+          style: TextStyle(fontSize: 12)),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.indigo,
+          elevation: 4,
+          shadowColor: Colors.black26,
+          side: const BorderSide(color: Colors.indigo),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 20, vertical: 8),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20)),
+        ),
       ),
+    ),
+  ],
+),
 
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.indigo,

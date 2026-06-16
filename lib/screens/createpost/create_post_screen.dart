@@ -17,7 +17,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   bool _isPosting = false;
 
   final _communities = [
-    'General', 'CSE', 'ECE', 'EEE', 'ME', 'CE', 'MBA', 'Sports', 'Events'
+    'General', 'CSE & Specialization', 'ECE', 'EEE', 'ME', 'CE', 'MBA', 'Sports', 'Events'
   ];
 
   @override
